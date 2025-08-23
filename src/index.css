@@ -1,0 +1,126 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Animation keyframes */
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Animation classes */
+.animate-fade-scale {
+  animation: fadeInScale 0.8s ease-out forwards;
+}
+
+.animate-fade {
+  animation: fadeIn 0.8s ease-out forwards;
+}
+
+.animate-fade-up {
+  opacity: 0;
+  animation: fadeInUp 0.5s ease-out forwards;
+}
+
+.animate-fade-up-delay-1 {
+  opacity: 0;
+  animation: fadeInUp 0.5s ease-out 0.15s forwards;
+}
+
+.animate-fade-up-delay-2 {
+  opacity: 0;
+  animation: fadeInUp 0.5s ease-out 0.3s forwards;
+}
+
+/* Scroll reveal base state */
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.scroll-reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.main-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  background: linear-gradient(to bottom, #ffd700 0%, #b8860b 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.golden-text {
+  background: linear-gradient(to bottom, #ffd700 0%, #b8860b 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.hover-image {
+  transition: transform 0.3s ease-in-out;
+}
+
+@media (min-width: 768px) {
+  .hover-image:hover {
+    transform: scale(1.02);
+  }
+}
+
+.buy-button {
+  transition: all 0.3s ease-in-out;
+}
+
+.buy-button:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+}
+
+@layer base {
+  input::placeholder {
+    @apply text-gray-400;
+  }
+}
