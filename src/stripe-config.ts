@@ -1,6 +1,6 @@
 export const products = {
   'Mein Kampf': {
-    priceId: 'price_1RxUH5CNmIXjMY5wKjaMfp0m',
+    priceId: 'price_1RxaN0CNmIXjMY5wRgLxza6n',
     productId: 'prod_StGoFLBUMyYUhg',
     name: 'Mein Kampf',
     description: 'The Revolution Has Begun',
