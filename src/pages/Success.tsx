@@ -27,8 +27,8 @@ export default function Success() {
           throw new Error('Payment verification failed');
         }
 
-        if (payment.payment_status !== 'completed') {
-          throw new Error('Payment not completed');
+        if (payment.payment_status !== 'paid') {
+          throw new Error('Payment not paid');
         }
 
         setIsVerifying(false);
