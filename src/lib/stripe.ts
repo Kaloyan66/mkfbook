@@ -81,5 +81,5 @@ export async function createCheckoutSession(
     }
   } catch (_) {}
 
-  throw error; // хваща се по-нагоре и показва банера с грешка
+  throw error; 
 }
