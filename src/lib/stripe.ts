@@ -35,9 +35,10 @@ export async function createCheckoutSession(
     .select('id')
     .single();
 
-  if (dbInsertError) {
-    throw new Error('Failed to create payment record');
-  }
+  if (dbError) {
+  console.error('Supabase insert error:', dbError);   // << добави това
+  throw new Error(dbError.message || 'Failed to create payment record');
+}
 
   payment = paymentRow;
 
