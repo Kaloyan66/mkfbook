@@ -35,49 +35,51 @@ export async function createCheckoutSession(
   }
 
   try {
-    const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/stripe-checkout`, {
+    const response = await fetch(
+    `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/stripe-checkout`,
+    {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        // ВАЖНО: за Supabase Edge трябва и двата хедъра
+        apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
         Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
       },
       body: JSON.stringify({
         price_id: priceId,
         mode,
+        // Stripe ще замести плейсхолдъра с реалния session id
         success_url: `${window.location.origin}/success?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${window.location.origin}/`,
+        cancel_url: `${window.location.origin}/cancel`,
         customer_email: customerData.email,
         customer_name: `${customerData.firstName} ${customerData.lastName}`,
-        payment_id: payment.id
+        payment_id: payment.id,
       }),
-    });
-
-    if (!response.ok) {
-      // Cleanup the pending payment record
-      await supabase
-        .from('payments')
-        .delete()
-        .match({ id: payment.id });
-
-      const errorData = await response.json();
-      throw new Error(errorData.error || 'Checkout session creation failed');
     }
+  );
 
-    const data = await response.json();
-
-    if (!data.url) {
-      throw new Error('No checkout URL returned');
-    }
-
-    window.location.href = data.url;
-  } catch (error) {
-    // Cleanup the pending payment record if it exists
-    if (payment?.id) {
-      await supabase
-        .from('payments')
-        .delete()
-        .match({ id: payment.id });
-    }
-    throw error;
+  if (!response.ok) {
+    // покажи реалното съобщение от Edge функцията – лесно за дебъг
+    const errText = await response.text();
+    console.error('Edge error:', errText);
+    throw new Error(errText || 'Checkout session creation failed');
   }
+
+  const data = await response.json();
+  if (!data.url) {
+    throw new Error('No checkout URL returned');
+  }
+
+  // пренасочване към Stripe Checkout
+  window.location.href = data.url;
+
+} catch (error) {
+  // Ако се провалим, опитай да почистиш „pending“ записа (ако политиките го позволяват)
+  try {
+    if (payment?.id) {
+      await supabase.from('payments').delete().match({ id: payment.id });
+    }
+  } catch (_) {}
+
+  throw error; // хваща се по-нагоре и показва банера с грешка
 }
